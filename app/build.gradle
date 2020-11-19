@@ -12,19 +12,42 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                cppFlags ""
+                abiFilters 'armeabi-v7a'
+
             }
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file("../keystore/keystore")
+            storePassword "chris123"
+            keyAlias "chris_ffmpeg"
+            keyPassword "chris123"
+            v2SigningEnabled false
+        }
+    }
+
+
     buildTypes {
         release {
+            debuggable true
+            buildConfigField "boolean", "LOG_DEBUG", "true"
             minifyEnabled false
+            zipAlignEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            minifyEnabled false
+            zipAlignEnabled true
         }
     }
     externalNativeBuild {
@@ -40,6 +63,7 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
